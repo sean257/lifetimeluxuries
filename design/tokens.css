@@ -1,0 +1,28 @@
+/* Lifetime Luxuries design tokens (light only).
+   Source: design/storefront-light.html. Map these into Tailwind's theme. */
+:root {
+  /* surfaces & text */
+  --bg: #FAF7F5;          /* page background, porcelain */
+  --surface: #FFFFFF;     /* panels, drawers, modals */
+  --tile: #F1EAE6;        /* product image tiles */
+  --ink: #1D1917;         /* primary text */
+  --muted: #6E625D;       /* secondary text */
+  --line: #E6DCD6;        /* hairlines and borders */
+
+  /* brand */
+  --rose: #A86F5C;        /* rose gold accent, buttons, wordmark */
+  --rose-strong: #8A5543; /* hover/pressed */
+  --on-rose: #FFFFFF;     /* text on rose buttons */
+  --veil: rgba(29,25,23,.45); /* overlay behind drawer/modal */
+
+  /* order status (admin only) */
+  --ok: #3F7A57;          /* Paid */
+  --warn: #9C6C22;        /* Confirmed / low stock */
+  --bad: #A8443B;         /* Cancelled / sold out / errors */
+  --info: #46607E;        /* New */
+
+  /* type */
+  --f-script: "Pinyon Script", "Snell Roundhand", cursive;            /* wordmark + one hero word only */
+  --f-display: "Cormorant Garamond", Garamond, "Times New Roman", serif; /* headings, product names, big numbers */
+  --f-body: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;  /* everything else */
+}

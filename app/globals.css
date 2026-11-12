@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+/* Tokens from design/tokens.css, mapped into Tailwind's theme. */
+@theme {
+  --color-bg: #FAF7F5;
+  --color-surface: #FFFFFF;
+  --color-tile: #F1EAE6;
+  --color-ink: #1D1917;
+  --color-muted: #6E625D;
+  --color-line: #E6DCD6;
+  --color-rose: #A86F5C;
+  --color-rose-strong: #8A5543;
+  --color-on-rose: #FFFFFF;
+  --color-veil: rgba(29, 25, 23, 0.45);
+  --color-ok: #3F7A57;
+  --color-warn: #9C6C22;
+  --color-bad: #A8443B;
+  --color-info: #46607E;
+}
+
+@theme inline {
+  --font-script: var(--font-pinyon), "Pinyon Script", "Snell Roundhand", cursive;
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Garamond, "Times New Roman", serif;
+  --font-body: var(--font-jost), "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-sans: var(--font-body);
+}
+
+@layer base {
+  :root {
+    /* raw token names, as in the prototype, for SVG fills etc. */
+    --bg: var(--color-bg);
+    --surface: var(--color-surface);
+    --tile: var(--color-tile);
+    --ink: var(--color-ink);
+    --muted: var(--color-muted);
+    --line: var(--color-line);
+    --rose: var(--color-rose);
+    --rose-strong: var(--color-rose-strong);
+    --on-rose: var(--color-on-rose);
+    --veil: var(--color-veil);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 400;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-wrap: balance;
+    line-height: 1.1;
+  }
+  a { color: inherit; }
+  :focus-visible {
+    outline: 2px solid var(--color-rose);
+    outline-offset: 2px;
+  }
+  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+}
+
+@utility wrap {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+@utility eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-rose);
+  font-weight: 500;
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Buttons: 2px radius, uppercase, 0.12em tracking. */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 2px;
+  padding: 12px 22px;
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-rose);
+  text-decoration: none;
+  font-weight: 500;
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+@utility btn-solid {
+  background: var(--color-rose);
+  color: var(--color-on-rose);
+  &:hover:not(:disabled) { background: var(--color-rose-strong); border-color: var(--color-rose-strong); }
+}
+@utility btn-ghost {
+  background: transparent;
+  color: var(--color-ink);
+  &:hover:not(:disabled) { background: var(--color-tile); }
+}
+
+/* Chips/pills are fully rounded. */
+@utility chip {
+  border: 1px solid var(--color-line);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-muted);
+  text-decoration: none;
+  &[aria-pressed="true"], &[aria-current="page"] {
+    background: var(--color-ink);
+    color: var(--color-bg);
+    border-color: var(--color-ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes veil-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@utility animate-drawer {
+  animation: drawer-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@utility animate-veil {
+  animation: veil-in 0.2s ease-out;
+}
