@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LogoMark, Wordmark } from "@/components/brand";
 import { NavLinks } from "@/components/nav-links";
 import { BagButton } from "@/components/bag-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
   return (
@@ -12,7 +13,10 @@ export function SiteHeader() {
           <Wordmark />
         </Link>
         <NavLinks />
-        <BagButton />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <BagButton />
+        </div>
       </div>
     </header>
   );

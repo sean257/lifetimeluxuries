@@ -75,7 +75,7 @@ export function LoginForm({ next, linkError }: { next: string; linkError?: strin
       </button>
       <button
         type="button"
-        className="justify-self-center text-[13px] text-muted underline hover:text-ink"
+        className="min-h-11 justify-self-center px-2 text-[13px] text-muted underline hover:text-ink"
         onClick={() => setMode("reset")}
       >
         Forgot password?

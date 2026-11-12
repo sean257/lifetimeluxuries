@@ -11,7 +11,7 @@ export default async function NewProductPage() {
   return (
     <>
       <div>
-        <Link href="/admin/products" className="text-[13px] text-muted no-underline hover:text-ink">
+        <Link href="/admin/products" className="inline-flex min-h-11 items-center text-[13px] text-muted no-underline hover:text-ink">
           ← All products
         </Link>
       </div>

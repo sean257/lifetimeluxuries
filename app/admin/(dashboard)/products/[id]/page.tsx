@@ -21,11 +21,11 @@ export default async function EditProductPage({ params, searchParams }: Props) {
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link href="/admin/products" className="text-[13px] text-muted no-underline hover:text-ink">
+        <Link href="/admin/products" className="inline-flex min-h-11 items-center text-[13px] text-muted no-underline hover:text-ink">
           ← All products
         </Link>
         {product.is_published ? (
-          <Link href={`/product/${product.slug}`} target="_blank" rel="noopener" className="text-[13px] text-muted underline hover:text-ink">
+          <Link href={`/product/${product.slug}`} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center text-[13px] text-muted underline hover:text-ink">
             View in shop
           </Link>
         ) : null}

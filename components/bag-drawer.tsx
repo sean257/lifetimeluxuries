@@ -283,7 +283,7 @@ export function BagDrawer() {
                           <span className="inline-flex items-center border border-line" role="group" aria-label={`Quantity of ${l.name}`}>
                             <button
                               type="button"
-                              className="h-7 w-7 text-[15px] disabled:opacity-40"
+                              className="h-9 w-9 text-[15px] disabled:opacity-40"
                               aria-label={`One less ${l.name}`}
                               disabled={l.qty <= 1}
                               onClick={() => setQty(l.id, l.qty - 1)}
@@ -293,7 +293,7 @@ export function BagDrawer() {
                             <span className="num min-w-[22px] text-center text-[13px]">{l.qty}</span>
                             <button
                               type="button"
-                              className="h-7 w-7 text-[15px] disabled:opacity-40"
+                              className="h-9 w-9 text-[15px] disabled:opacity-40"
                               aria-label={`One more ${l.name}`}
                               disabled={l.qty >= l.stock}
                               onClick={() => setQty(l.id, l.qty + 1)}
@@ -303,7 +303,7 @@ export function BagDrawer() {
                           </span>
                           <button
                             type="button"
-                            className="ml-2.5 text-xs text-muted underline hover:text-ink"
+                            className="ml-1.5 min-h-9 px-1.5 text-xs text-muted underline hover:text-ink"
                             onClick={() => remove(l.id)}
                             aria-label={`Remove ${l.name}`}
                           >

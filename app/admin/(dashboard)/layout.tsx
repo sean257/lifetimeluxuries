@@ -4,6 +4,7 @@ import { AdminSideNav, AdminTabBar } from "@/components/admin/admin-nav";
 import { signOut } from "@/app/actions/auth";
 import { requireAdmin } from "@/lib/admin";
 import { SkipLink } from "@/components/skip-link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = await requireAdmin();
@@ -30,6 +31,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <span className="ml-auto min-w-0 truncate text-[13px] text-muted" title={user.email}>
               {user.email}
             </span>
+            <ThemeToggle className="size-9" />
             <form action={signOut}>
               <button type="submit" className="btn btn-ghost px-3.5 py-2 text-xs">
                 Sign out

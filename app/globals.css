@@ -25,6 +25,53 @@
   --font-sans: var(--font-body);
 }
 
+/* Dark palette, from design/storefront-with-dark-mode.html.
+   Follows the device unless the visitor picks a theme (html[data-theme]). */
+@layer theme {
+  :root {
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --color-bg: #12100F;
+      --color-surface: #1B1817;
+      --color-tile: #231E1C;
+      --color-ink: #EFE7E3;
+      --color-muted: #A89A94;
+      --color-line: #342D2A;
+      --color-rose: #D3A08C;
+      --color-rose-strong: #E6B8A5;
+      --color-on-rose: #1A1311;
+      --color-veil: rgba(0, 0, 0, 0.6);
+      --color-ok: #7BBE92;
+      --color-warn: #DDB066;
+      --color-bad: #E08479;
+      --color-info: #8FAAD0;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --color-bg: #12100F;
+    --color-surface: #1B1817;
+    --color-tile: #231E1C;
+    --color-ink: #EFE7E3;
+    --color-muted: #A89A94;
+    --color-line: #342D2A;
+    --color-rose: #D3A08C;
+    --color-rose-strong: #E6B8A5;
+    --color-on-rose: #1A1311;
+    --color-veil: rgba(0, 0, 0, 0.6);
+    --color-ok: #7BBE92;
+    --color-warn: #DDB066;
+    --color-bad: #E08479;
+    --color-info: #8FAAD0;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+}
+
 @layer base {
   :root {
     /* raw token names, as in the prototype, for SVG fills etc. */

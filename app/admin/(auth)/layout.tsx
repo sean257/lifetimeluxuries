@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { LogoMark, Wordmark } from "@/components/brand";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main id="main" className="wrap flex min-h-dvh flex-col items-center py-10">
+    <main id="main" className="wrap relative flex min-h-dvh flex-col items-center py-10">
+      <ThemeToggle className="absolute top-4 right-4 size-10" />
       <Link href="/" className="flex items-center gap-2.5 no-underline" aria-label="Lifetime Luxuries shop">
         <LogoMark className="h-10 w-[34px] flex-none" />
         <Wordmark />

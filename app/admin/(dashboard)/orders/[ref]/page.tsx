@@ -31,7 +31,7 @@ export default async function OrderDetailPage({ params }: Props) {
   return (
     <>
       <div>
-        <Link href="/admin/orders" className="text-[13px] text-muted no-underline hover:text-ink">
+        <Link href="/admin/orders" className="inline-flex min-h-11 items-center text-[13px] text-muted no-underline hover:text-ink">
           ← All orders
         </Link>
         <div className="mt-2 flex flex-wrap items-end justify-between gap-4">

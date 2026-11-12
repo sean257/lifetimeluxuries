@@ -46,12 +46,12 @@ export default async function ProductPage({ params }: Params) {
   const back = product.category === "watch" ? { href: "/watches", label: "Watches" } : { href: "/accessories", label: "Accessories" };
   return (
     <main id="main" className="wrap pt-6 pb-[72px] min-[721px]:pt-10">
-      <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-muted">
-        <Link href="/" className="no-underline hover:text-ink">
+      <nav aria-label="Breadcrumb" className="mb-2 flex items-center gap-1 text-[13px] text-muted">
+        <Link href="/" className="inline-flex min-h-11 items-center no-underline hover:text-ink">
           Shop
         </Link>
         <span aria-hidden="true"> / </span>
-        <Link href={back.href} className="no-underline hover:text-ink">
+        <Link href={back.href} className="inline-flex min-h-11 items-center no-underline hover:text-ink">
           {back.label}
         </Link>
       </nav>

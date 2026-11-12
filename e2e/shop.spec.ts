@@ -66,3 +66,19 @@ test("robots, sitemap and admin protection", async ({ request, page }) => {
   await expect(page).toHaveURL(/\/admin\/login\?next=/);
   expect(res?.headers()["x-robots-tag"]).toContain("noindex");
 });
+
+test("theme switch: follows the device, then remembers the choice without a flash", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(await bg()).toBe("rgb(18, 16, 15)");
+
+  await page.getByRole("button", { name: "Switch to light mode" }).click();
+  expect(await bg()).toBe("rgb(250, 247, 245)");
+
+  // On the next page load the saved choice is applied before first paint.
+  await page.goto("/watches");
+  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe("light");
+  expect(await bg()).toBe("rgb(250, 247, 245)");
+  await expect(page.getByRole("button", { name: "Switch to dark mode" })).toBeVisible();
+});
