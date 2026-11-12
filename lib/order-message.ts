@@ -5,15 +5,17 @@ export type OrderMessageInput = {
   items: { name: string; qty: number; line_total: number }[];
   subtotal: number;
   delivery_label: string;
-  delivery_fee: number;
-  total: number;
   name: string;
   /** As the customer typed it, e.g. "077 211 8430". */
   phone: string;
   notes?: string | null;
 };
 
-/** The WhatsApp order message. Keep the format exactly: the owner recognises it. */
+/**
+ * The WhatsApp order message. The owner recognises this format, so change it
+ * only on purpose. Delivery fees are worked out after the order, so the
+ * message shows the delivery choice and an items total excluding delivery.
+ */
 export function buildOrderMessage(o: OrderMessageInput): string {
   const notes = o.notes?.trim();
   return [
@@ -23,8 +25,8 @@ export function buildOrderMessage(o: OrderMessageInput): string {
     ...o.items.map((i) => `${i.qty} × ${i.name} — ${formatPrice(i.line_total)}`),
     "",
     `Subtotal: ${formatPrice(o.subtotal)}`,
-    `Delivery: ${o.delivery_label}${o.delivery_fee > 0 ? ` (${formatPrice(o.delivery_fee)})` : ""}`,
-    `Total: ${formatPrice(o.total)}`,
+    `Delivery: ${o.delivery_label}`,
+    `Total: ${formatPrice(o.subtotal)} (excl. delivery)`,
     "",
     `Name: ${o.name}`,
     `Phone: ${o.phone.trim()}`,

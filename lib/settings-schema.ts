@@ -17,11 +17,6 @@ export const deliveryRowSchema = z.object({
   /** Empty for a new option; the server makes one from the label. */
   code: z.union([z.literal(""), z.string().regex(DELIVERY_CODE_RE).max(40)]),
   label: z.string().trim().min(1, "Each delivery option needs a name.").max(60, "Keep delivery names under 60 characters."),
-  fee: z.coerce
-    .number({ message: "Enter the fee in whole US dollars." })
-    .int("Enter the fee in whole US dollars, without cents.")
-    .min(0, "The fee can't be negative.")
-    .max(10_000, "That fee looks too high. Check it."),
   is_active: z.boolean(),
 });
 

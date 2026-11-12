@@ -94,7 +94,6 @@ export function BagDrawer() {
 
   const subtotal = lines.reduce((s, l) => s + l.price * l.qty, 0);
   const delivery = data?.delivery.find((d) => d.code === form.delivery);
-  const fee = lines.length && delivery ? delivery.fee : 0;
 
   const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -140,8 +139,6 @@ export function BagDrawer() {
           items: o.items,
           subtotal: o.subtotal,
           delivery_label: o.delivery_label,
-          delivery_fee: o.delivery_fee,
-          total: o.total,
           name: o.customer_name,
           phone: typedPhone,
           notes: o.notes,
@@ -371,7 +368,6 @@ export function BagDrawer() {
                       {data?.delivery.map((d) => (
                         <option key={d.code} value={d.code}>
                           {d.label}
-                          {d.fee > 0 ? ` (+${formatPrice(d.fee)})` : " (free)"}
                         </option>
                       ))}
                     </select>
@@ -408,12 +404,13 @@ export function BagDrawer() {
                     </div>
                     <div className="flex justify-between">
                       <span>Delivery</span>
-                      <span>{fee ? formatPrice(fee) : "Free"}</span>
+                      <span className="text-muted">Calculated after you order</span>
                     </div>
                     <div className="flex justify-between font-display text-lg font-semibold">
                       <span>Total</span>
-                      <span>{formatPrice(subtotal + fee)}</span>
+                      <span>{formatPrice(subtotal)}</span>
                     </div>
+                    <p className="font-body text-xs font-normal text-muted">Excludes delivery.</p>
                   </div>
                 </>
               ) : null}
@@ -428,7 +425,7 @@ export function BagDrawer() {
                   {pending ? "Sending…" : "Send order on WhatsApp"}
                 </button>
                 <p className="text-center text-xs text-muted">
-                  We confirm stock and payment with you in the chat. Nothing is charged here.
+                  We confirm stock, the delivery fee and payment with you in the chat. Nothing is charged here.
                 </p>
               </div>
             ) : null}

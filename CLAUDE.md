@@ -47,7 +47,7 @@ Developer: Sean Chikobvu. Client: Lifetime Luxuries (owner is the only admin use
 | `/` | Header (mark + wordmark, Watches, Accessories, Bag), hero with the featured product (`is_featured`), trust strip (3 points from prototype), full collection grid with All/Watches/Accessories chips and price sort. |
 | `/watches`, `/accessories` | Same grid, filtered. |
 | `/product/[slug]` | Product page: photo gallery (main + thumbnails, swipe on mobile), name, subtitle, price, description, specs table, stock note ("Only 2 left" when ≤2, "Sold out" at 0), quantity, Add to bag, "Ask about this on WhatsApp" link. In the grid, clicking a card can open this as a modal (intercepting route) like the prototype, but the URL must work on its own for sharing. |
-| Bag drawer | Global client component. Lines with qty +/−, remove, name/phone/delivery/notes form, subtotal/delivery/total, "Send order on WhatsApp". Bag persists in `localStorage` (product id + qty only; prices are always re-read from the server). |
+| Bag drawer | Global client component. Lines with qty +/−, remove, name/phone/delivery/notes form, subtotal, delivery ("Calculated after you order", no amounts), total excluding delivery, "Send order on WhatsApp". Bag persists in `localStorage` (product id + qty only; prices are always re-read from the server). |
 | Order sent screen | Shown in the drawer after `place_order` succeeds: order ref, "Open WhatsApp" button (wa.me link with the prefilled message), the message shown as selectable text with a Copy button, and the shop's number as fallback. |
 
 SEO: per-product `generateMetadata` (title, description, Open Graph image = main photo), `sitemap.xml`, `robots.txt` that disallows `/admin`, Product JSON-LD on product pages. Revalidate shop pages when the admin saves (`revalidatePath`).
@@ -60,7 +60,7 @@ SEO: per-product `generateMetadata` (title, description, Open Graph image = main
 | `/admin/orders` | Table with status filter chips + counts, newest first. Each row: ref, date/time, customer, tap-to-WhatsApp phone link, items, delivery, total, status dropdown. Row opens `/admin/orders/[ref]` with full detail and an internal `admin_notes` field. |
 | `/admin/products` | List with photo thumbnail, name, category, price, stock, published toggle, availability pill. Search + category filter. "Add product" button. Drag or up/down to reorder (`sort_order`). |
 | `/admin/products/new`, `/admin/products/[id]` | Product editor (see below). |
-| `/admin/settings` | WhatsApp number (validated `^[0-9]{10,15}$`), delivery options (label, fee, active, order). |
+| `/admin/settings` | WhatsApp number (validated `^[0-9]{10,15}$`), delivery options (label, active, order). No fees: the delivery fee is agreed with the customer on WhatsApp after the order (all `delivery_options.fee` = 0, see migration `20261113000000`). |
 
 Admin layout: left sidebar on desktop, bottom tab bar on mobile (the owner will mostly use his phone). Header shows his email and a Sign out button.
 
@@ -94,8 +94,8 @@ Order LL-1001
 1 × Rose Gold Cufflinks — $120
 
 Subtotal: $1,570
-Delivery: Delivery in Harare ($10)
-Total: $1,580
+Delivery: Delivery in Harare
+Total: $1,570 (excl. delivery)
 
 Name: Tendai Moyo
 Phone: 077 211 8430

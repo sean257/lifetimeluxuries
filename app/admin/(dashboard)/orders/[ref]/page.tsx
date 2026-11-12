@@ -76,7 +76,7 @@ export default async function OrderDetailPage({ params }: Props) {
             </div>
             <div className="flex justify-between gap-3">
               <dt>Delivery · {order.delivery_label}</dt>
-              <dd>{order.delivery_fee ? formatPrice(order.delivery_fee) : "Free"}</dd>
+              <dd className={order.delivery_fee ? "" : "text-muted"}>{order.delivery_fee ? formatPrice(order.delivery_fee) : "Agreed on WhatsApp"}</dd>
             </div>
             <div className="flex justify-between font-display text-lg font-semibold">
               <dt>Total</dt>

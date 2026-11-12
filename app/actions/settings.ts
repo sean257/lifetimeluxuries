@@ -59,7 +59,8 @@ export async function saveDeliveryOptions(raw: unknown): Promise<SettingsResult>
       code = deliveryCode(r.label, taken);
       taken.add(code);
     }
-    return { code, label: r.label, fee: r.fee, is_active: r.is_active, sort_order: i + 1 };
+    // Delivery fees are agreed with the customer after the order, so none is stored.
+    return { code, label: r.label, fee: 0, is_active: r.is_active, sort_order: i + 1 };
   });
 
   const { error } = await supabase.from("delivery_options").upsert(rows, { onConflict: "code" });

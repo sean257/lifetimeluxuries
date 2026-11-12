@@ -9,14 +9,14 @@ import { requireAdmin } from "@/lib/admin";
 export const metadata: Metadata = { title: "Settings" };
 
 const deliveryRows = z.array(
-  z.object({ code: z.string(), label: z.string(), fee: z.coerce.number(), is_active: z.boolean(), sort_order: z.number() }),
+  z.object({ code: z.string(), label: z.string(), is_active: z.boolean(), sort_order: z.number() }),
 );
 
 export default async function SettingsPage() {
   const { supabase } = await requireAdmin();
   const [settingsRes, deliveryRes] = await Promise.all([
     supabase.from("settings").select("whatsapp_number").maybeSingle(),
-    supabase.from("delivery_options").select("code, label, fee, is_active, sort_order").order("sort_order"),
+    supabase.from("delivery_options").select("code, label, is_active, sort_order").order("sort_order"),
   ]);
   if (settingsRes.error || deliveryRes.error) throw new Error("Could not load settings.");
   const delivery = deliveryRows.parse(deliveryRes.data ?? []);
@@ -24,7 +24,6 @@ export default async function SettingsPage() {
     key: d.code,
     code: d.code,
     label: d.label,
-    fee: String(Math.round(d.fee)),
     is_active: d.is_active,
   }));
 
@@ -39,9 +38,9 @@ export default async function SettingsPage() {
       </Panel>
       <Panel
         title="Delivery options"
-        sub="Shown in the bag in this order. Switch an option off to stop offering it; past orders keep the name and fee they were placed with."
+        sub="Shown in the bag in this order, without prices. You agree the delivery fee with each customer on WhatsApp after they order. Switch an option off to stop offering it."
       >
-        <DeliveryForm key={formRows.map((r) => `${r.code}:${r.label}:${r.fee}:${r.is_active}`).join("|")} initial={formRows} />
+        <DeliveryForm key={formRows.map((r) => `${r.code}:${r.label}:${r.is_active}`).join("|")} initial={formRows} />
       </Panel>
     </>
   );

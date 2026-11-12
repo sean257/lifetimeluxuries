@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildOrderMessage } from "@/lib/order-message";
 
 describe("buildOrderMessage", () => {
-  it("matches the format in CLAUDE.md exactly", () => {
+  it("matches the format in CLAUDE.md exactly (no delivery fee; agreed after the order)", () => {
     const msg = buildOrderMessage({
       ref: "LL-1001",
       items: [
@@ -11,8 +11,6 @@ describe("buildOrderMessage", () => {
       ],
       subtotal: 1570,
       delivery_label: "Delivery in Harare",
-      delivery_fee: 10,
-      total: 1580,
       name: "Tendai Moyo",
       phone: "077 211 8430",
       notes: "Gate code 44",
@@ -26,8 +24,8 @@ describe("buildOrderMessage", () => {
         "1 × Rose Gold Cufflinks — $120",
         "",
         "Subtotal: $1,570",
-        "Delivery: Delivery in Harare ($10)",
-        "Total: $1,580",
+        "Delivery: Delivery in Harare",
+        "Total: $1,570 (excl. delivery)",
         "",
         "Name: Tendai Moyo",
         "Phone: 077 211 8430",
@@ -36,20 +34,19 @@ describe("buildOrderMessage", () => {
     );
   });
 
-  it("omits the fee for free delivery, and the notes line when empty", () => {
+  it("never prints a delivery amount, and omits the notes line when empty", () => {
     const msg = buildOrderMessage({
       ref: "LL-1002",
       items: [{ name: "Italian Leather Strap", qty: 2, line_total: 170 }],
       subtotal: 170,
-      delivery_label: "Collect in Harare",
-      delivery_fee: 0,
-      total: 170,
+      delivery_label: "Courier to another city",
       name: "Farai Ncube",
       phone: " 0773405512 ",
       notes: "   ",
     });
     expect(msg).toContain("2 × Italian Leather Strap — $170");
-    expect(msg).toContain("Delivery: Collect in Harare\n");
+    expect(msg).toContain("Delivery: Courier to another city\n");
+    expect(msg).toContain("Total: $170 (excl. delivery)");
     expect(msg.endsWith("Phone: 0773405512")).toBe(true);
     expect(msg).not.toContain("Notes:");
   });
@@ -59,9 +56,7 @@ describe("buildOrderMessage", () => {
       ref: "LL-1003",
       items: [{ name: "Tiger's Eye Bracelet", qty: 1, line_total: 65 }],
       subtotal: 65,
-      delivery_label: "Courier to another city",
-      delivery_fee: 25,
-      total: 90,
+      delivery_label: "Collect in Harare",
       name: "Rumbi & Co",
       phone: "+263 77 401 9362",
       notes: "Ring #2 @ gate?",

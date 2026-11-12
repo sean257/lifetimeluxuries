@@ -21,10 +21,10 @@ describe("whatsappSchema", () => {
 });
 
 describe("delivery options", () => {
-  const row = { code: "harare", label: "Delivery in Harare", fee: "10", is_active: true };
-  it("validates fees and labels per row", () => {
+  const row = { code: "harare", label: "Delivery in Harare", is_active: true };
+  it("validates labels per row", () => {
     expect(deliveryListSchema.safeParse([row]).success).toBe(true);
-    const bad = deliveryListSchema.safeParse([row, { ...row, code: "", fee: "2.5" }]);
+    const bad = deliveryListSchema.safeParse([row, { ...row, code: "", label: "" }]);
     expect(bad.error?.issues[0]?.path[0]).toBe(1);
     expect(deliveryListSchema.safeParse([{ ...row, label: " " }]).success).toBe(false);
   });
