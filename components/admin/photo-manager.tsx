@@ -3,29 +3,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import {
-  addProductImage,
   deleteProductImage,
   reorderProductImages,
   updateImageAlt,
 } from "@/app/actions/products";
 import { Panel } from "@/components/admin/panel";
 import { inputClass } from "@/components/admin/form-bits";
-import { createClient } from "@/lib/supabase/client";
-import { prepareImage } from "@/lib/image-prep";
+import { PHOTO_ACCEPT, STAGE_LABEL, STAGE_PCT, isPhotoFile, uploadProductPhoto, type UploadStage } from "@/lib/upload-photo";
 import { MAX_PHOTOS } from "@/lib/product-schema";
 
 export type ManagedImage = { id: string; url: string; alt: string | null; width: number | null; height: number | null };
 
-type Upload = { key: string; name: string; stage: "prepare" | "upload" | "save" | "done" | "error"; error?: string };
-
-const STAGE_PCT: Record<Upload["stage"], number> = { prepare: 20, upload: 60, save: 90, done: 100, error: 100 };
-const STAGE_LABEL: Record<Upload["stage"], string> = {
-  prepare: "Resizing…",
-  upload: "Uploading…",
-  save: "Saving…",
-  done: "Done",
-  error: "Failed",
-};
+type Upload = { key: string; name: string; stage: UploadStage; error?: string };
 
 export function PhotoManager({
   productId,
@@ -54,7 +43,7 @@ export function PhotoManager({
 
   async function handleFiles(fileList: FileList | File[]) {
     setError("");
-    const files = Array.from(fileList).filter((f) => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name));
+    const files = Array.from(fileList).filter(isPhotoFile);
     if (!files.length) {
       setError("Choose photo files (JPEG, PNG, WebP or HEIC).");
       return;
@@ -69,28 +58,12 @@ export function PhotoManager({
       ...batch.map(({ file, key }) => ({ key, name: file.name, stage: "prepare" as const })),
     ]);
 
-    const supabase = createClient();
     let added = 0;
     // One at a time keeps memory low on phones.
     for (const { file, key } of batch) {
       try {
-        const prepared = await prepareImage(file);
-        patchUpload(key, { stage: "upload" });
-        const path = `${productId}/${crypto.randomUUID()}.${prepared.ext}`;
-        const { error: upError } = await supabase.storage
-          .from("product-images")
-          .upload(path, prepared.blob, { contentType: prepared.contentType, cacheControl: "31536000", upsert: false });
-        if (upError) throw new Error("Upload failed. Check your connection and try again.");
-
-        patchUpload(key, { stage: "save" });
-        const res = await addProductImage({ productId, path, width: prepared.width, height: prepared.height });
-        if (!res.ok || !res.image) {
-          await supabase.storage.from("product-images").remove([path]);
-          throw new Error(res.ok ? "Couldn't save the photo." : res.error);
-        }
-        const url = supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl;
-        setImages((list) => [...list, { id: res.image!.id, url, alt: null, width: prepared.width, height: prepared.height }]);
-        patchUpload(key, { stage: "done" });
+        const img = await uploadProductPhoto(productId, file, (stage) => patchUpload(key, { stage }));
+        setImages((list) => [...list, { id: img.id, url: img.url, alt: null, width: img.width, height: img.height }]);
         added++;
       } catch (e) {
         patchUpload(key, { stage: "error", error: e instanceof Error ? e.message : "Upload failed." });
@@ -196,7 +169,7 @@ export function PhotoManager({
             <input
               ref={input}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+              accept={PHOTO_ACCEPT}
               multiple
               className="sr-only"
               tabIndex={-1}

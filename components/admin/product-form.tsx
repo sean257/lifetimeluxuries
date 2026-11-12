@@ -40,7 +40,17 @@ const EMPTY: ProductFormValues = {
   specs: [],
 };
 
-export function ProductForm({ id, initial }: { id: string | null; initial?: ProductFormValues }) {
+type Props = {
+  id: string | null;
+  initial?: ProductFormValues;
+  /** New products only: shown between the details and the specs. */
+  photosSlot?: React.ReactNode;
+  photoCount?: number;
+  /** New products only: runs after the product is created; returns how many photos failed. */
+  afterCreate?: (id: string) => Promise<number>;
+};
+
+export function ProductForm({ id, initial, photosSlot, photoCount = 0, afterCreate }: Props) {
   const router = useRouter();
   const [v, setV] = useState<ProductFormValues>(initial ?? EMPTY);
   const [slugTouched, setSlugTouched] = useState(!!id);
@@ -52,6 +62,7 @@ export function ProductForm({ id, initial }: { id: string | null; initial?: Prod
   const [errors, setErrors] = useState<Partial<Record<ProductField, string>>>({});
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [saving, startSave] = useTransition();
+  const [uploading, setUploading] = useState(false);
   const [deleting, startDelete] = useTransition();
 
   const set = <K extends keyof ProductFormValues>(key: K, value: ProductFormValues[K]) => {
@@ -100,7 +111,13 @@ export function ProductForm({ id, initial }: { id: string | null; initial?: Prod
       }
       setErrors({});
       if (!id) {
-        router.replace(`/admin/products/${res.id}?created=1`);
+        let failed = 0;
+        if (afterCreate && photoCount) {
+          setUploading(true);
+          setMsg({ ok: true, text: "Product created. Uploading photos…" });
+          failed = await afterCreate(res.id);
+        }
+        router.replace(`/admin/products/${res.id}?created=1${failed ? `&failed=${failed}` : ""}`);
       } else {
         setMsg({ ok: true, text: res.message });
         router.refresh();
@@ -283,6 +300,8 @@ export function ProductForm({ id, initial }: { id: string | null; initial?: Prod
         </div>
       </div>
 
+      {photosSlot}
+
       <Panel title="Specs" sub="Shown as a table on the product page, e.g. Case · 42 mm, stainless steel.">
         <div className="grid gap-2.5">
           {v.specs.length === 0 ? <p className="text-[13px] text-muted">No specs yet.</p> : null}
@@ -342,8 +361,8 @@ export function ProductForm({ id, initial }: { id: string | null; initial?: Prod
       </Panel>
 
       <div className="sticky bottom-[calc(57px+env(safe-area-inset-bottom,0px))] z-10 -mx-4 flex flex-wrap items-center gap-3 border-t border-line bg-bg/95 px-4 py-3 backdrop-blur-[8px] min-[900px]:bottom-0 min-[900px]:-mx-8 min-[900px]:px-8">
-        <button type="submit" className="btn btn-solid" disabled={saving || deleting}>
-          {saving ? "Saving…" : id ? "Save changes" : "Create product"}
+        <button type="submit" className="btn btn-solid" disabled={saving || deleting || uploading}>
+          {uploading ? "Uploading photos…" : saving ? "Saving…" : id ? "Save changes" : photoCount ? `Create product + ${photoCount} photo${photoCount === 1 ? "" : "s"}` : "Create product"}
         </button>
         <Link href="/admin/products" className="btn btn-ghost">
           {id ? "Back to products" : "Cancel"}

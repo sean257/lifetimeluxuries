@@ -7,13 +7,14 @@ import { PhotoManager } from "@/components/admin/photo-manager";
 import { requireAdmin } from "@/lib/admin";
 import { getAdminProduct } from "@/lib/admin-products";
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ created?: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ created?: string; failed?: string }> };
 
 export const metadata: Metadata = { title: "Edit product" };
 
 export default async function EditProductPage({ params, searchParams }: Props) {
   const { supabase } = await requireAdmin();
-  const [{ id }, { created }] = await Promise.all([params, searchParams]);
+  const [{ id }, { created, failed }] = await Promise.all([params, searchParams]);
+  const failedCount = Number.parseInt(failed ?? "0", 10) || 0;
   const product = await getAdminProduct(supabase, id);
   if (!product) notFound();
 
@@ -31,9 +32,15 @@ export default async function EditProductPage({ params, searchParams }: Props) {
       </div>
       <AdminPageHeader title={product.name} />
       {created ? (
-        <p role="status" className="-mt-3 text-[13px] text-ok">
-          Product created. Add photos below.
-        </p>
+        failedCount ? (
+          <p role="alert" className="-mt-3 text-[13px] text-bad">
+            Product created, but {failedCount} photo{failedCount === 1 ? "" : "s"} didn&apos;t upload. Add {failedCount === 1 ? "it" : "them"} again below.
+          </p>
+        ) : (
+          <p role="status" className="-mt-3 text-[13px] text-ok">
+            Product created.{product.images.length ? "" : " Add photos below."}
+          </p>
+        )
       ) : null}
 
       <PhotoManager

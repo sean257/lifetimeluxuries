@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { ProductForm } from "@/components/admin/product-form";
+import { NewProductEditor } from "@/components/admin/new-product-editor";
 import { requireAdmin } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Add product" };
@@ -15,8 +15,8 @@ export default async function NewProductPage() {
           ← All products
         </Link>
       </div>
-      <AdminPageHeader title="Add product" description="Fill in the details and create the product. You can add photos straight after." />
-      <ProductForm id={null} />
+      <AdminPageHeader title="Add product" description="Fill in the details, add photos, then create the product." />
+      <NewProductEditor />
     </>
   );
 }
