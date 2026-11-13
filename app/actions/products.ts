@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/supabase/public";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getAdmin } from "@/lib/admin";
@@ -17,6 +18,7 @@ const uuid = z.uuid();
 
 /** Shop pages are static; refresh them after any catalogue change. */
 function revalidateShop() {
+  revalidateTag(CATALOGUE_TAG);
   revalidatePath("/", "layout");
 }
 

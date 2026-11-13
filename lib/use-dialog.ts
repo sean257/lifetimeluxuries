@@ -4,6 +4,9 @@ import { useEffect, type RefObject } from "react";
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/** Open dialogs, newest last. Only the top one reacts to keys. */
+const stack: object[] = [];
+
 /**
  * Shared dialog behaviour: locks page scroll, moves focus into the panel,
  * keeps Tab inside it, closes on Escape, and returns focus on close.
@@ -11,6 +14,8 @@ const FOCUSABLE =
 export function useDialog(panel: RefObject<HTMLElement | null>, onClose: () => void, active = true) {
   useEffect(() => {
     if (!active) return;
+    const token = {};
+    stack.push(token);
     const prevOverflow = document.body.style.overflow;
     const opener = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
@@ -27,6 +32,7 @@ export function useDialog(panel: RefObject<HTMLElement | null>, onClose: () => v
     panel.current?.focus();
 
     const onKey = (e: KeyboardEvent) => {
+      if (stack[stack.length - 1] !== token) return;
       if (e.key === "Escape") {
         e.preventDefault();
         onClose();
@@ -50,6 +56,7 @@ export function useDialog(panel: RefObject<HTMLElement | null>, onClose: () => v
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
+      stack.splice(stack.indexOf(token), 1);
       document.body.style.overflow = prevOverflow;
       for (const el of inerted) el.removeAttribute("inert");
       opener?.focus?.();

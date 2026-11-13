@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/supabase/public";
 import { z } from "zod";
 import { getAdmin } from "@/lib/admin";
 import { ORDER_REF_RE, ORDER_STATUSES, STATUS_LABEL } from "@/lib/order-status";
@@ -35,7 +36,10 @@ export async function updateOrderStatus(raw: unknown): Promise<ActionResult> {
 
   revalidatePath("/admin", "layout");
   // Paid/Delivered/Cancelled change stock, which the shop shows.
-  if (parsed.data.status !== "new" && parsed.data.status !== "confirmed") revalidatePath("/", "layout");
+  if (parsed.data.status !== "new" && parsed.data.status !== "confirmed") {
+    revalidateTag(CATALOGUE_TAG);
+    revalidatePath("/", "layout");
+  }
   return { ok: true, message: `${parsed.data.ref} marked ${STATUS_LABEL[parsed.data.status]}` };
 }
 

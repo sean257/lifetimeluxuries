@@ -10,8 +10,8 @@ export function ProductDetail({ product, whatsapp, headingLevel = "h1", titleId,
   const Heading = headingLevel;
   const price = formatPrice(product.price);
   return (
-    <div className="grid bg-surface min-[721px]:grid-cols-2">
-      <ProductGallery product={product} className="min-h-[260px] min-[721px]:min-h-[320px]" />
+    <div className="grid bg-surface min-[721px]:grid-cols-[1.2fr_1fr]">
+      <ProductGallery product={product} className="min-[721px]:sticky min-[721px]:top-0 min-[721px]:self-start" />
       <div className="flex min-w-0 flex-col gap-3.5 px-5 py-6 min-[721px]:px-[30px] min-[721px]:py-[34px]">
         <div className="eyebrow">
           {CATEGORY_LABEL[product.category]}

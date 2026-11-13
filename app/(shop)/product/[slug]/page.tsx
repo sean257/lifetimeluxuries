@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: Params) {
         </Link>
       </nav>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(productJsonLd(product)) }} />
-      <div className="mx-auto max-w-[920px] border border-line">
+      <div className="mx-auto max-w-[1100px] border border-line">
         <ProductDetail product={product} whatsapp={whatsapp} />
       </div>
     </main>

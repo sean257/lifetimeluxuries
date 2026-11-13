@@ -20,7 +20,7 @@ export function Modal({ children, labelledBy }: { children: React.ReactNode; lab
           aria-modal="true"
           aria-labelledby={labelledBy}
           tabIndex={-1}
-          className="pointer-events-auto relative max-h-[calc(100%-32px)] w-[min(920px,100%)] overflow-auto bg-surface outline-none"
+          className="pointer-events-auto relative max-h-[calc(100%-32px)] w-[min(1100px,100%)] overflow-auto bg-surface outline-none"
         >
           <button
             type="button"

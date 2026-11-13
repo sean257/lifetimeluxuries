@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/supabase/public";
 import { z } from "zod";
 import { getAdmin } from "@/lib/admin";
 import { DELIVERY_CODE_RE, deliveryCode, deliveryListSchema, whatsappSchema } from "@/lib/settings-schema";
@@ -28,6 +29,7 @@ export async function saveWhatsAppNumber(raw: unknown): Promise<SettingsResult> 
     return { ok: false, error: "Couldn't save the number. Try again." };
   }
   // Every shop page links to this number.
+  revalidateTag(CATALOGUE_TAG);
   revalidatePath("/", "layout");
   return { ok: true, message: "Number saved. New orders go to this chat.", value: data.whatsapp_number };
 }
